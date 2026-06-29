@@ -1,260 +1,215 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local StarterGui = game:GetService("StarterGui")
+local Players=game:GetService("Players")
+local RunService=game:GetService("RunService")
+local UserInputService=game:GetService("UserInputService")
+local StarterGui=game:GetService("StarterGui")
 
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
+local LocalPlayer=Players.LocalPlayer
+local Camera=workspace.CurrentCamera
 
-local Config = {
-    Aimbot = true,
-    ESP = true,
-    AimKey = Enum.UserInputType.MouseButton2,
-    MenuKey = Enum.KeyCode.Insert,
-    FOV = 500,
-    ColorIndex = 1,
-    ESPColors = {Color3.new(1,1,1), Color3.new(1,0,0), Color3.new(0,1,0), Color3.new(0,0,1)},
-    ColorNames = {"WHITE", "RED", "GREEN", "BLUE"}
-}
+local Config={Aimbot=true,ESP=true,AimKey=Enum.UserInputType.MouseButton2,MenuKey=Enum.KeyCode.Insert,FOV=500,ColorIndex=1,ESPColors={Color3.new(1,1,1),Color3.new(1,0,0),Color3.new(0,1,0),Color3.new(0,0,1)},ColorNames={"WHITE","RED","GREEN","BLUE"}}
+local DiscordLink="https://discord.com/invite/5tKpPG32cB"
+local isListening=false
+local isMin=false
+local running=true
 
-local DiscordLink = "https://discord.com/invite/5tKpPG32cB"
-local isListeningForKey = false
-local isMinimized = false
-local scriptRunning = true
+local sg=Instance.new("ScreenGui")
+sg.ResetOnSpawn=false
+sg.Parent=(gethui and gethui())or game:GetService("CoreGui")
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = gethui and gethui() or game:GetService("CoreGui")
-ScreenGui.ResetOnSpawn = false
+local mf=Instance.new("Frame")
+mf.Size=UDim2.new(0,220,0,380)
+mf.Position=UDim2.new(0.02,0,0.3,0)
+mf.BackgroundColor3=Color3.fromRGB(10,12,28)
+mf.Draggable=true
+mf.Parent=sg
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 220, 0, 380)
-MainFrame.Position = UDim2.new(0.02, 0, 0.3, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(10, 12, 28)
-MainFrame.Draggable = true
-MainFrame.Parent = ScreenGui
+Instance.new("UICorner",mf).CornerRadius=UDim.new(0,16)
+Instance.new("UIStroke",mf).Color=Color3.fromRGB(0,255,200)
 
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 16)
-Instance.new("UIStroke", MainFrame).Color = Color3.fromRGB(0, 255, 200)
+local tb=Instance.new("Frame")
+tb.Size=UDim2.new(1,0,0,45)
+tb.BackgroundColor3=Color3.fromRGB(5,10,25)
+tb.Parent=mf
+Instance.new("UICorner",tb).CornerRadius=UDim.new(0,16)
 
-local TitleBar = Instance.new("Frame")
-TitleBar.Size = UDim2.new(1,0,0,45)
-TitleBar.BackgroundColor3 = Color3.fromRGB(5,10,25)
-TitleBar.Parent = MainFrame
-Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0,16)
+local title=Instance.new("TextLabel",tb)
+title.Size=UDim2.new(1,-90,1,0)
+title.BackgroundTransparency=1
+title.Text="XAI CORE v1.0"
+title.TextColor3=Color3.fromRGB(0,255,200)
+title.Font=Enum.Font.GothamBold
+title.TextSize=18
 
-local TitleLabel = Instance.new("TextLabel", TitleBar)
-TitleLabel.Size = UDim2.new(1,-90,1,0)
-TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "XAI HAX v1.0"
-TitleLabel.TextColor3 = Color3.fromRGB(0, 255, 200)
-TitleLabel.Font = Enum.Font.GothamBold
-TitleLabel.TextSize = 18
+local minb=Instance.new("TextButton",tb)
+minb.Size=UDim2.new(0,35,0,35)
+minb.Position=UDim2.new(1,-80,0,5)
+minb.BackgroundColor3=Color3.fromRGB(0,120,180)
+minb.Text="−"
+minb.TextColor3=Color3.new(1,1,1)
+minb.Font=Enum.Font.GothamBold
+minb.TextSize=24
+Instance.new("UICorner",minb).CornerRadius=UDim.new(0,8)
 
-local MinBtn = Instance.new("TextButton", TitleBar)
-MinBtn.Size = UDim2.new(0,35,0,35)
-MinBtn.Position = UDim2.new(1,-80,0,5)
-MinBtn.BackgroundColor3 = Color3.fromRGB(0,120,180)
-MinBtn.Text = "−"
-MinBtn.TextColor3 = Color3.new(1,1,1)
-MinBtn.Font = Enum.Font.GothamBold
-MinBtn.TextSize = 24
-Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(0,8)
+local clb=Instance.new("TextButton",tb)
+clb.Size=UDim2.new(0,35,0,35)
+clb.Position=UDim2.new(1,-40,0,5)
+clb.BackgroundColor3=Color3.fromRGB(200,40,40)
+clb.Text="×"
+clb.TextColor3=Color3.new(1,1,1)
+clb.Font=Enum.Font.GothamBold
+clb.TextSize=24
+Instance.new("UICorner",clb).CornerRadius=UDim.new(0,8)
 
-local CloseBtn = Instance.new("TextButton", TitleBar)
-CloseBtn.Size = UDim2.new(0,35,0,35)
-CloseBtn.Position = UDim2.new(1,-40,0,5)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(200,40,40)
-CloseBtn.Text = "×"
-CloseBtn.TextColor3 = Color3.new(1,1,1)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 24
-Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0,8)
+local content=Instance.new("Frame")
+content.Size=UDim2.new(1,0,1,-45)
+content.Position=UDim2.new(0,0,0,45)
+content.BackgroundTransparency=1
+content.Parent=mf
 
-local Content = Instance.new("Frame")
-Content.Size = UDim2.new(1,0,1,-45)
-Content.Position = UDim2.new(0,0,0,45)
-Content.BackgroundTransparency = 1
-Content.Parent = MainFrame
+local minib=Instance.new("TextButton")
+minib.Size=UDim2.new(0,55,0,55)
+minib.Position=UDim2.new(0.02,0,0.4,0)
+minib.BackgroundColor3=Color3.fromRGB(5,20,40)
+minib.Text="X"
+minib.TextColor3=Color3.fromRGB(0,255,200)
+minib.Font=Enum.Font.GothamBold
+minib.TextSize=28
+minib.Visible=false
+minib.Parent=sg
+Instance.new("UICorner",minib).CornerRadius=UDim.new(0,16)
+Instance.new("UIStroke",minib).Color=Color3.fromRGB(0,255,200)
 
-local MiniBox = Instance.new("TextButton")
-MiniBox.Size = UDim2.new(0,55,0,55)
-MiniBox.Position = UDim2.new(0.02,0,0.4,0)
-MiniBox.BackgroundColor3 = Color3.fromRGB(5,20,40)
-MiniBox.Text = "X"
-MiniBox.TextColor3 = Color3.fromRGB(0,255,200)
-MiniBox.Font = Enum.Font.GothamBold
-MiniBox.TextSize = 28
-MiniBox.Visible = false
-MiniBox.Parent = ScreenGui
-Instance.new("UICorner", MiniBox).CornerRadius = UDim.new(0,16)
-Instance.new("UIStroke", MiniBox).Color = Color3.fromRGB(0,255,200)
+local buttons={}
+local function addBtn(txt,y,key,col,disc,keyb)
+    local b=Instance.new("TextButton")
+    b.Size=UDim2.new(0.92,0,0,42)
+    b.Position=UDim2.new(0.04,0,0,y)
+    b.BackgroundColor3=Color3.fromRGB(25,30,55)
+    b.TextColor3=Color3.new(1,1,1)
+    b.Font=Enum.Font.GothamSemibold
+    b.TextSize=14
+    b.Parent=content
+    Instance.new("UICorner",b).CornerRadius=UDim.new(0,10)
 
-local buttons = {}
-
-local function createButton(text, yPos, configKey, isColorBtn, isDiscordBtn, isKeybindBtn)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.92,0,0,42)
-    btn.Position = UDim2.new(0.04,0,0,yPos)
-    btn.BackgroundColor3 = Color3.fromRGB(25,30,55)
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.GothamSemibold
-    btn.TextSize = 14
-    btn.Parent = Content
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
-
-    local function update()
-        if isKeybindBtn then
-            btn.Text = "AIM KEY: " .. (Config.AimKey and Config.AimKey.Name or "None")
-        elseif isColorBtn then
-            btn.Text = "COLOR: " .. Config.ColorNames[Config.ColorIndex]
-            btn.TextColor3 = Config.ESPColors[Config.ColorIndex]
-        elseif isDiscordBtn then
-            btn.Text = "DISCORD"
-            btn.BackgroundColor3 = Color3.fromRGB(88,101,242)
-        else
-            local state = Config[configKey] and " [ON]" or " [OFF]"
-            btn.Text = text .. state
-            btn.BackgroundColor3 = Config[configKey] and Color3.fromRGB(0,170,100) or Color3.fromRGB(170,40,40)
-        end
+    local function up()
+        if keyb then b.Text="AIM KEY: "..(Config.AimKey and Config.AimKey.Name or "None")
+        elseif col then b.Text="COLOR: "..Config.ColorNames[Config.ColorIndex];b.TextColor3=Config.ESPColors[Config.ColorIndex]
+        elseif disc then b.Text="DISCORD";b.BackgroundColor3=Color3.fromRGB(88,101,242)
+        else b.Text=txt..(Config[key]and" [ON]"or" [OFF]");b.BackgroundColor3=Config[key]and Color3.fromRGB(0,170,100)or Color3.fromRGB(170,40,40)end
     end
 
-    btn.MouseButton1Click:Connect(function()
-        if isKeybindBtn then
-            isListeningForKey = true
-            btn.Text = "PRESS ANY KEY..."
-            btn.BackgroundColor3 = Color3.fromRGB(255,140,0)
-        elseif isColorBtn then
-            Config.ColorIndex = (Config.ColorIndex % #Config.ESPColors) + 1
-        elseif isDiscordBtn then
-            if setclipboard then setclipboard(DiscordLink) end
+    b.MouseButton1Click:Connect(function()
+        if keyb then
+            isListening=true
+            b.Text="PRESS ANY KEY..."
+            b.BackgroundColor3=Color3.fromRGB(255,140,0)
+        elseif col then Config.ColorIndex=(Config.ColorIndex%#Config.ESPColors)+1
+        elseif disc then
+            if setclipboard then setclipboard(DiscordLink)end
             StarterGui:SetCore("SendNotification",{Title="XAI",Text="Link Copied!",Duration=3})
-        else
-            Config[configKey] = not Config[configKey]
-        end
-        update()
+        else Config[key]=not Config[key]end
+        up()
     end)
-
-    table.insert(buttons, {update = update})
-    update()
+    table.insert(buttons,{update=up})
+    up()
 end
 
-createButton("AIMBOT", 15, "Aimbot")
-createButton("WALLHACK", 65, "ESP")
-createButton(nil, 115, nil, true)
-createButton(nil, 165, nil, false, false, true)
-createButton(nil, 215, nil, false, true)
+addBtn("AIMBOT",15,"Aimbot")
+addBtn("WALLHACK",65,"ESP")
+addBtn(nil,115,nil,true)
+addBtn(nil,165,nil,false,false,true)
+addBtn(nil,215,nil,false,true)
 
-local function toggleMinimize()
-    isMinimized = not isMinimized
-    MainFrame.Visible = not isMinimized
-    MiniBox.Visible = isMinimized
+local function togMin()
+    isMin=not isMin
+    mf.Visible=not isMin
+    minib.Visible=isMin
 end
+minb.MouseButton1Click:Connect(togMin)
+minib.MouseButton1Click:Connect(togMin)
 
-MinBtn.MouseButton1Click:Connect(toggleMinimize)
-MiniBox.MouseButton1Click:Connect(toggleMinimize)
-
-CloseBtn.MouseButton1Click:Connect(function()
-    scriptRunning = false
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("Highlight") then v:Destroy() end
-    end
-    ScreenGui:Destroy()
+clb.MouseButton1Click:Connect(function()
+    running=false
+    for _,v in ipairs(workspace:GetDescendants())do if v:IsA("Highlight")then v:Destroy()end end
+    sg:Destroy()
 end)
 
-local function isKeyPressed(key)
-    if not key or not scriptRunning then return false end
-    if key.EnumType == Enum.UserInputType then
-        return UserInputService:IsMouseButtonPressed(key)
-    elseif key.EnumType == Enum.KeyCode then
-        return UserInputService:IsKeyDown(key)
-    end
+local function isPressed(k)
+    if not k or not running then return false end
+    if k.EnumType==Enum.UserInputType then return UserInputService:IsMouseButtonPressed(k)
+    elseif k.EnumType==Enum.KeyCode then return UserInputService:IsKeyDown(k)end
     return false
 end
 
-UserInputService.InputBegan:Connect(function(input, gp)
-    if isListeningForKey and not gp and scriptRunning then
-        if input.UserInputType.Name:find("MouseButton") then
-            Config.AimKey = input.UserInputType
-        elseif input.KeyCode ~= Enum.KeyCode.Unknown then
-            Config.AimKey = input.KeyCode
-        end
-        isListeningForKey = false
-        for _, b in ipairs(buttons) do b.update() end
+UserInputService.InputBegan:Connect(function(i,gp)
+    if isListening and not gp then
+        if i.UserInputType.Name:find("MouseButton")then Config.AimKey=i.UserInputType
+        elseif i.KeyCode~=Enum.KeyCode.Unknown then Config.AimKey=i.KeyCode end
+        isListening=false
+        for _,b in ipairs(buttons)do b.update()end
     end
 end)
 
-local targets = {}
-local function updateTargets()
-    if not scriptRunning then return end
-    targets = {}
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then table.insert(targets, p.Character) end
+local targets={}
+local function updT()
+    if not running then return end
+    targets={}
+    for _,p in ipairs(Players:GetPlayers())do
+        if p~=LocalPlayer and p.Character then table.insert(targets,p.Character)end
     end
-    for _, obj in ipairs(workspace:GetChildren()) do
-        if obj:IsA("Model") and obj:FindFirstChildOfClass("Humanoid") and obj ~= LocalPlayer.Character then
-            table.insert(targets, obj)
-        end
+    for _,o in ipairs(workspace:GetChildren())do
+        if o:IsA("Model")and o:FindFirstChildOfClass("Humanoid")and o~=LocalPlayer.Character then table.insert(targets,o)end
     end
 end
 
 task.spawn(function()
-    while scriptRunning and task.wait(1.8) do
-        updateTargets()
-    end
+    while running and task.wait(1.8)do updT()end
 end)
 
 RunService.RenderStepped:Connect(function()
-    if not scriptRunning then return end
-    local col = Config.ESPColors[Config.ColorIndex]
-
-    for _, char in ipairs(targets) do
+    if not running then return end
+    local col=Config.ESPColors[Config.ColorIndex]
+    for _,char in ipairs(targets)do
         if char and char.Parent then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum and hum.Health > 0 then
-                local hl = char:FindFirstChildOfClass("Highlight")
+            local hum=char:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health>0 then
+                local hl=char:FindFirstChildOfClass("Highlight")
                 if Config.ESP then
-                    if not hl then hl = Instance.new("Highlight", char) end
-                    hl.Enabled = true
-                    hl.FillColor = col
-                    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                elseif hl then hl.Enabled = false end
+                    if not hl then hl=Instance.new("Highlight",char)end
+                    hl.Enabled=true
+                    hl.FillColor=col
+                    hl.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop
+                elseif hl then hl.Enabled=false end
             end
         end
     end
 
-    if Config.Aimbot and isKeyPressed(Config.AimKey) then
-        local closest, minDist = nil, Config.FOV
-        local center = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y/2)
-
-        for _, char in ipairs(targets) do
-            local root = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if root and hum and hum.Health > 0 then
-                local pos, onScreen = Camera:WorldToViewportPoint(root.Position)
-                if onScreen then
-                    local d = (Vector2.new(pos.X, pos.Y) - center).Magnitude
-                    if d < minDist then
-                        minDist = d
-                        closest = root
-                    end
+    if Config.Aimbot and isPressed(Config.AimKey)then
+        local closest,minD=nil,Config.FOV
+        local center=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
+        for _,char in ipairs(targets)do
+            local root=char:FindFirstChild("Head")or char:FindFirstChild("HumanoidRootPart")
+            local hum=char:FindFirstChildOfClass("Humanoid")
+            if root and hum and hum.Health>0 then
+                local pos,on=Camera:WorldToViewportPoint(root.Position)
+                if on then
+                    local d=(Vector2.new(pos.X,pos.Y)-center).Magnitude
+                    if d<minD then minD=d closest=root end
                 end
             end
         end
-
-        if closest then
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, closest.Position)
-        end
+        if closest then Camera.CFrame=CFrame.new(Camera.CFrame.Position,closest.Position)end
     end
 end)
 
-UserInputService.InputBegan:Connect(function(input, gp)
-    if not gp and input.KeyCode == Config.MenuKey and scriptRunning then
-        if isMinimized then
-            isMinimized = false
-            MainFrame.Visible = true
-            MiniBox.Visible = false
+UserInputService.InputBegan:Connect(function(i,gp)
+    if not gp and i.KeyCode==Config.MenuKey and running then
+        if isMin then
+            isMin=false
+            mf.Visible=true
+            minib.Visible=false
         else
-            MainFrame.Visible = not MainFrame.Visible
+            mf.Visible=not mf.Visible
         end
     end
 end)
