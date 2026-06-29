@@ -1,1 +1,216 @@
-local a=game:GetService;local b=a("Players");local c=a("RunService");local d=a("UserInputService");local e=a("StarterGui");local f=b.LocalPlayer;local g=workspace.CurrentCamera;local h={A= true,B= true,C=Enum.UserInputType.MouseButton2,D=Enum.KeyCode.Insert,E=500,F=1,G={Color3.new(1,1,1),Color3.new(1,0,0),Color3.new(0,1,0),Color3.new(0,0,1)},H={"WHITE","RED","GREEN","BLUE"}};local i="https://discord.com/invite/5tKpPG32cB";local j=false;local k=false;local l=true;local m=Instance.new("ScreenGui");m.ResetOnSpawn=false;m.Parent=(gethui and gethui())or a("CoreGui");local n=Instance.new("Frame");n.Size=UDim2.new(0,220,0,380);n.Position=UDim2.new(0.02,0,0.3,0);n.BackgroundColor3=Color3.fromRGB(10,12,28);n.Draggable=true;n.Parent=m;Instance.new("UICorner",n).CornerRadius=UDim.new(0,16);Instance.new("UIStroke",n).Color=Color3.fromRGB(0,255,200);local o=Instance.new("Frame");o.Size=UDim2.new(1,0,0,45);o.BackgroundColor3=Color3.fromRGB(5,10,25);o.Parent=n;Instance.new("UICorner",o).CornerRadius=UDim.new(0,16);local p=Instance.new("TextLabel",o);p.Size=UDim2.new(1,-90,1,0);p.BackgroundTransparency=1;p.Text="XAI CORE";p.TextColor3=Color3.fromRGB(0,255,200);p.Font=Enum.Font.GothamBold;p.TextSize=18;local q=Instance.new("TextButton",o);q.Size=UDim2.new(0,35,0,35);q.Position=UDim2.new(1,-80,0,5);q.BackgroundColor3=Color3.fromRGB(0,120,180);q.Text="−";q.TextColor3=Color3.new(1,1,1);q.Font=Enum.Font.GothamBold;q.TextSize=24;Instance.new("UICorner",q).CornerRadius=UDim.new(0,8);local r=Instance.new("TextButton",o);r.Size=UDim2.new(0,35,0,35);r.Position=UDim2.new(1,-40,0,5);r.BackgroundColor3=Color3.fromRGB(200,40,40);r.Text="×";r.TextColor3=Color3.new(1,1,1);r.Font=Enum.Font.GothamBold;r.TextSize=24;Instance.new("UICorner",r).CornerRadius=UDim.new(0,8);local s=Instance.new("Frame");s.Size=UDim2.new(1,0,1,-45);s.Position=UDim2.new(0,0,0,45);s.BackgroundTransparency=1;s.Parent=n;local t=Instance.new("TextButton");t.Size=UDim2.new(0,55,0,55);t.Position=UDim2.new(0.02,0,0.4,0);t.BackgroundColor3=Color3.fromRGB(5,20,40);t.Text="X";t.TextColor3=Color3.fromRGB(0,255,200);t.Font=Enum.Font.GothamBold;t.TextSize=28;t.Visible=false;t.Parent=m;Instance.new("UICorner",t).CornerRadius=UDim.new(0,16);Instance.new("UIStroke",t).Color=Color3.fromRGB(0,255,200);local u={};local function v(w,x,y,z,aa,ab)local ac=Instance.new("TextButton");ac.Size=UDim2.new(0.92,0,0,42);ac.Position=UDim2.new(0.04,0,0,x);ac.BackgroundColor3=Color3.fromRGB(25,30,55);ac.TextColor3=Color3.new(1,1,1);ac.Font=Enum.Font.GothamSemibold;ac.TextSize=14;ac.Parent=s;Instance.new("UICorner",ac).CornerRadius=UDim.new(0,10);local function ad()if ab then ac.Text="AIM KEY: "..(h.C and h.C.Name or "None")elseif z then ac.Text="COLOR: "..h.H[h.F];ac.TextColor3=h.G[h.F]elseif aa then ac.Text="DISCORD";ac.BackgroundColor3=Color3.fromRGB(88,101,242)else local ae=h[y]and" [ON]"or" [OFF]";ac.Text=w..ae;ac.BackgroundColor3=h[y]and Color3.fromRGB(0,170,100)or Color3.fromRGB(170,40,40)end end;ac.MouseButton1Click:Connect(function()if ab then j=true;ac.Text="PRESS ANY KEY...";ac.BackgroundColor3=Color3.fromRGB(255,140,0)elseif z then h.F=(h.F%#h.G)+1 elseif aa then if setclipboard then setclipboard(i)end;e:SetCore("SendNotification",{Title="XAI",Text="Link Copied!",Duration=3})else h[y]=not h[y]end;ad()end);table.insert(u,{update=ad});ad()end;v("AIMBOT",15,"A");v("WALLHACK",65,"B");v(nil,115,nil,true);v(nil,165,nil,false,false,true);v(nil,215,nil,false,true);local function ae()k=not k;MainFrame.Visible=not k;t.Visible=k end;q.MouseButton1Click:Connect(ae);t.MouseButton1Click:Connect(ae);r.MouseButton1Click:Connect(function()l=false;for _,af in ipairs(workspace:GetDescendants())do if af:IsA("Highlight")then af:Destroy()end end;ScreenGui:Destroy()end);local function ag(ah)if not ah or not l then return false end;if ah.EnumType==Enum.UserInputType then return d:IsMouseButtonPressed(ah)elseif ah.EnumType==Enum.KeyCode then return d:IsKeyDown(ah)end;return false end;d.InputBegan:Connect(function(ai,aj)if j and not aj then if ai.UserInputType.Name:find("MouseButton")then h.C=ai.UserInputType elseif ai.KeyCode~=Enum.KeyCode.Unknown then h.C=ai.KeyCode end;j=false;for _,ak in ipairs(u)do ak.update()end end end);local al={};local function am()if not l then return end;al={};for _,an in ipairs(b:GetPlayers())do if an~=f and an.Character then table.insert(al,an.Character)end end;for _,ao in ipairs(workspace:GetChildren())do if ao:IsA("Model")and ao:FindFirstChildOfClass("Humanoid")and ao~=f.Character then table.insert(al,ao)end end end;task.spawn(function()while l and task.wait(1.8)do am()end end);c.RenderStepped:Connect(function()if not l then return end;local ap=h.G[h.F];for _,aq in ipairs(al)do if aq and aq.Parent then local ar=aq:FindFirstChildOfClass("Humanoid");if ar and ar.Health>0 then local as=aq:FindFirstChildOfClass("Highlight");if h.B then if not as then as=Instance.new("Highlight",aq)end;as.Enabled=true;as.FillColor=ap;as.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop elseif as then as.Enabled=false end end end end;if h.A and ag(h.C)then local at,au=nil,h.E;local av=Vector2.new(g.ViewportSize.X/2,g.ViewportSize.Y/2);for _,aw in ipairs(al)do local ax=aw:FindFirstChild("Head")or aw:FindFirstChild("HumanoidRootPart");local ay=aw:FindFirstChildOfClass("Humanoid");if ax and ay and ay.Health>0 then local az,aA=g:WorldToViewportPoint(ax.Position);if aA then local aB=(Vector2.new(az.X,az.Y)-av).Magnitude;if aB<au then au=aB;at=ax end end end end;if at then g.CFrame=CFrame.new(g.CFrame.Position,at.Position)end end end);d.InputBegan:Connect(function(ai,aj)if not aj and ai.KeyCode==h.D and l then if k then k=false;MainFrame.Visible=true;t.Visible=false else MainFrame.Visible=not MainFrame.Visible end end end)
+-- XAI HUB - Stable Obfuscated
+local Players=game:GetService("Players")
+local RunService=game:GetService("RunService")
+local UserInputService=game:GetService("UserInputService")
+local StarterGui=game:GetService("StarterGui")
+
+local LocalPlayer=Players.LocalPlayer
+local Camera=workspace.CurrentCamera
+
+local Config={Aimbot=true,ESP=true,AimKey=Enum.UserInputType.MouseButton2,MenuKey=Enum.KeyCode.Insert,FOV=500,ColorIndex=1,ESPColors={Color3.new(1,1,1),Color3.new(1,0,0),Color3.new(0,1,0),Color3.new(0,0,1)},ColorNames={"WHITE","RED","GREEN","BLUE"}}
+local DiscordLink="https://discord.com/invite/5tKpPG32cB"
+local isListening=false
+local isMin=false
+local running=true
+
+local sg=Instance.new("ScreenGui")
+sg.ResetOnSpawn=false
+sg.Parent=(gethui and gethui())or game:GetService("CoreGui")
+
+local mf=Instance.new("Frame")
+mf.Size=UDim2.new(0,220,0,380)
+mf.Position=UDim2.new(0.02,0,0.3,0)
+mf.BackgroundColor3=Color3.fromRGB(10,12,28)
+mf.Draggable=true
+mf.Parent=sg
+
+Instance.new("UICorner",mf).CornerRadius=UDim.new(0,16)
+Instance.new("UIStroke",mf).Color=Color3.fromRGB(0,255,200)
+
+local tb=Instance.new("Frame")
+tb.Size=UDim2.new(1,0,0,45)
+tb.BackgroundColor3=Color3.fromRGB(5,10,25)
+tb.Parent=mf
+Instance.new("UICorner",tb).CornerRadius=UDim.new(0,16)
+
+local title=Instance.new("TextLabel",tb)
+title.Size=UDim2.new(1,-90,1,0)
+title.BackgroundTransparency=1
+title.Text="XAI HAX v1.0"
+title.TextColor3=Color3.fromRGB(0,255,200)
+title.Font=Enum.Font.GothamBold
+title.TextSize=18
+
+local minb=Instance.new("TextButton",tb)
+minb.Size=UDim2.new(0,35,0,35)
+minb.Position=UDim2.new(1,-80,0,5)
+minb.BackgroundColor3=Color3.fromRGB(0,120,180)
+minb.Text="−"
+minb.TextColor3=Color3.new(1,1,1)
+minb.Font=Enum.Font.GothamBold
+minb.TextSize=24
+Instance.new("UICorner",minb).CornerRadius=UDim.new(0,8)
+
+local clb=Instance.new("TextButton",tb)
+clb.Size=UDim2.new(0,35,0,35)
+clb.Position=UDim2.new(1,-40,0,5)
+clb.BackgroundColor3=Color3.fromRGB(200,40,40)
+clb.Text="×"
+clb.TextColor3=Color3.new(1,1,1)
+clb.Font=Enum.Font.GothamBold
+clb.TextSize=24
+Instance.new("UICorner",clb).CornerRadius=UDim.new(0,8)
+
+local content=Instance.new("Frame")
+content.Size=UDim2.new(1,0,1,-45)
+content.Position=UDim2.new(0,0,0,45)
+content.BackgroundTransparency=1
+content.Parent=mf
+
+local minib=Instance.new("TextButton")
+minib.Size=UDim2.new(0,55,0,55)
+minib.Position=UDim2.new(0.02,0,0.4,0)
+minib.BackgroundColor3=Color3.fromRGB(5,20,40)
+minib.Text="X"
+minib.TextColor3=Color3.fromRGB(0,255,200)
+minib.Font=Enum.Font.GothamBold
+minib.TextSize=28
+minib.Visible=false
+minib.Parent=sg
+Instance.new("UICorner",minib).CornerRadius=UDim.new(0,16)
+Instance.new("UIStroke",minib).Color=Color3.fromRGB(0,255,200)
+
+local btns={}
+local function addBtn(txt,y,key,colBtn,discBtn,keyBtn)
+    local b=Instance.new("TextButton")
+    b.Size=UDim2.new(0.92,0,0,42)
+    b.Position=UDim2.new(0.04,0,0,y)
+    b.BackgroundColor3=Color3.fromRGB(25,30,55)
+    b.TextColor3=Color3.new(1,1,1)
+    b.Font=Enum.Font.GothamSemibold
+    b.TextSize=14
+    b.Parent=content
+    Instance.new("UICorner",b).CornerRadius=UDim.new(0,10)
+
+    local function up()
+        if keyBtn then b.Text="AIM KEY: "..(Config.AimKey and Config.AimKey.Name or "None")
+        elseif colBtn then b.Text="COLOR: "..Config.ColorNames[Config.ColorIndex];b.TextColor3=Config.ESPColors[Config.ColorIndex]
+        elseif discBtn then b.Text="DISCORD";b.BackgroundColor3=Color3.fromRGB(88,101,242)
+        else b.Text=txt..(Config[key]and" [ON]"or" [OFF]");b.BackgroundColor3=Config[key]and Color3.fromRGB(0,170,100)or Color3.fromRGB(170,40,40)end
+    end
+
+    b.MouseButton1Click:Connect(function()
+        if keyBtn then
+            isListening=true
+            b.Text="PRESS ANY KEY..."
+            b.BackgroundColor3=Color3.fromRGB(255,140,0)
+        elseif colBtn then Config.ColorIndex=(Config.ColorIndex%#Config.ESPColors)+1
+        elseif discBtn then
+            if setclipboard then setclipboard(DiscordLink)end
+            StarterGui:SetCore("SendNotification",{Title="XAI",Text="Link Copied!",Duration=3})
+        else Config[key]=not Config[key]end
+        up()
+    end)
+    table.insert(btns,{update=up})
+    up()
+end
+
+addBtn("AIMBOT",15,"Aimbot")
+addBtn("WALLHACK",65,"ESP")
+addBtn(nil,115,nil,true)
+addBtn(nil,165,nil,false,false,true)
+addBtn(nil,215,nil,false,true)
+
+local function togMin()
+    isMinimized=not isMinimized
+    MainFrame.Visible=not isMinimized
+    minib.Visible=isMinimized
+end
+minb.MouseButton1Click:Connect(togMin)
+minib.MouseButton1Click:Connect(togMin)
+
+clb.MouseButton1Click:Connect(function()
+    running=false
+    for _,v in ipairs(workspace:GetDescendants())do if v:IsA("Highlight")then v:Destroy()end end
+    sg:Destroy()
+end)
+
+local function isPressed(k)
+    if not k or not running then return false end
+    if k.EnumType==Enum.UserInputType then return UserInputService:IsMouseButtonPressed(k)
+    elseif k.EnumType==Enum.KeyCode then return UserInputService:IsKeyDown(k)end
+    return false
+end
+
+UserInputService.InputBegan:Connect(function(i,gp)
+    if isListening and not gp then
+        if i.UserInputType.Name:find("MouseButton")then Config.AimKey=i.UserInputType
+        elseif i.KeyCode~=Enum.KeyCode.Unknown then Config.AimKey=i.KeyCode end
+        isListening=false
+        for _,btn in ipairs(btns)do btn.update()end
+    end
+end)
+
+local targets={}
+local function updTargets()
+    if not running then return end
+    targets={}
+    for _,p in ipairs(Players:GetPlayers())do
+        if p~=LocalPlayer and p.Character then table.insert(targets,p.Character)end
+    end
+    for _,obj in ipairs(workspace:GetChildren())do
+        if obj:IsA("Model")and obj:FindFirstChildOfClass("Humanoid")and obj~=LocalPlayer.Character then table.insert(targets,obj)end
+    end
+end
+
+task.spawn(function()
+    while running and task.wait(1.8)do updTargets()end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if not running then return end
+    local col=Config.ESPColors[Config.ColorIndex]
+    for _,char in ipairs(targets)do
+        if char and char.Parent then
+            local hum=char:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health>0 then
+                local hl=char:FindFirstChildOfClass("Highlight")
+                if Config.ESP then
+                    if not hl then hl=Instance.new("Highlight",char)end
+                    hl.Enabled=true
+                    hl.FillColor=col
+                    hl.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop
+                elseif hl then hl.Enabled=false end
+            end
+        end
+    end
+
+    if Config.Aimbot and isPressed(Config.AimKey)then
+        local closest,minD=nil,Config.FOV
+        local center=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
+        for _,char in ipairs(targets)do
+            local root=char:FindFirstChild("Head")or char:FindFirstChild("HumanoidRootPart")
+            local hum=char:FindFirstChildOfClass("Humanoid")
+            if root and hum and hum.Health>0 then
+                local pos,on=Camera:WorldToViewportPoint(root.Position)
+                if on then
+                    local dist=(Vector2.new(pos.X,pos.Y)-center).Magnitude
+                    if dist<minD then minD=dist closest=root end
+                end
+            end
+        end
+        if closest then Camera.CFrame=CFrame.new(Camera.CFrame.Position,closest.Position)end
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(i,gp)
+    if not gp and i.KeyCode==Config.MenuKey and running then
+        if isMinimized then
+            isMinimized=false
+            mf.Visible=true
+            minib.Visible=false
+        else
+            mf.Visible=not mf.Visible
+        end
+    end
+end)
